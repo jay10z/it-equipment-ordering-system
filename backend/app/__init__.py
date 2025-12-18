@@ -60,9 +60,12 @@ def create_app(config_class=Config):
     from app.routes.products import bp as products_bp
     from app.routes.orders import bp as orders_bp
 
+    from app.routes.users import bp as users_bp
+    
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(products_bp, url_prefix='/api/products')
     app.register_blueprint(orders_bp, url_prefix='/api/orders')
+    app.register_blueprint(users_bp, url_prefix='/api/users')
 
     return app
 

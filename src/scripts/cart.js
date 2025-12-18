@@ -193,7 +193,6 @@ window.handleCheckout = async function () {
 
     try {
         console.log("=== SENDING REQUEST TO BACKEND ===");
-        console.log("API URL:", 'http://127.0.0.1:5000/api/orders/');
         console.log("Request data:", { items: orderItems });
 
         // Step 6: Send to backend

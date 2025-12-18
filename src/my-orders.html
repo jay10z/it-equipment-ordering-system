@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <title>My Orders - ProTech Solutions</title>
+    <style>
+        .orders-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .order-card {
+            background-color: var(--secondary-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-light);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(136, 146, 176, 0.2);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-Pending {
+            background: #ffeeba;
+            color: #856404;
+        }
+
+        .status-Shipped {
+            background: #b8daff;
+            color: #004085;
+        }
+
+        .status-Delivered {
+            background: #c3e6cb;
+            color: #155724;
+        }
+
+        .status-Cancelled {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .order-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(136, 146, 176, 0.1);
+        }
+
+        .order-total {
+            text-align: right;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="products.html">Products</a></li>
+                <li> <a href="contact.html">Contact</a></li>
+                <li> <a href="about.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="cta-group">
+            <a class="cta" href="#" onclick="logout()">Logout</a>
+        </div>
+    </header>
+
+    <main class="orders-page">
+        <h1>My Order History</h1>
+        <div id="orders-list">
+            <p>Loading your orders...</p>
+        </div>
+    </main>
+
+    <script src="scripts/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = ApiClient.getToken();
+            if (!token) {
+                alert('Please log in to view your orders.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const orders = await ApiClient.getMyOrders();
+                const container = document.getElementById('orders-list');
+
+                if (orders.length === 0) {
+                    container.innerHTML = '<p>You have not placed any orders yet. <a href="products.html" style="color:var(--accent-color)">Start shopping!</a></p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                orders.forEach(order => {
+                    const date = new Date(order.created_at).toLocaleDateString();
+
+                    let itemsHtml = '';
+                    order.items.forEach(item => {
+                        itemsHtml += `
+                            <li class="order-item">
+                                <span>${item.quantity}x ${item.product_name}</span>
+                                <span>${(item.price * item.quantity).toLocaleString()} FCFA</span>
+                            </li>
+                        `;
+                    });
+
+                    const html = `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <h3>Order #${order.id}</h3>
+                                    <small style="color:var(--text-secondary)">Placed on ${date}</small>
+                                </div>
+                                <span class="order-status status-${order.status}">${order.status}</span>
+                            </div>
+                            <ul class="order-items">
+                                ${itemsHtml}
+                            </ul>
+                            <div class="order-total">
+                                Total: ${order.total_amount.toLocaleString()} FCFA
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('orders-list').innerHTML = `<p style="color:red">Failed to load orders: ${err.message}</p>`;
+            }
+        });
+
+        function logout() {
+            ApiClient.logout();
+        }
+    </script>
+</body>
+
+</html>

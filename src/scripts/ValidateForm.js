@@ -123,7 +123,7 @@ async function validateLogin(){
                 localStorage.setItem("token", token)
                 document.getElementById("auth").innerHTML = 
                     "Login Success!";
-                window.location.href = "http://127.0.0.1:5501/src/Products.html";
+                window.location.href = "http://127.0.0.1:5501/src/products.html";
 
               }).catch(e => document.getElementById("auth").innerHTML = "INVALID CREDENTIALS")
         }   

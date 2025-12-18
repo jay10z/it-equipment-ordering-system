@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ProTech Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <style>
+        .admin-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #233554;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background-color: var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(100, 255, 218, 0.1);
+            color: var(--accent-color);
+        }
+
+        .content-card {
+            background-color: var(--secondary-color);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #233554;
+        }
+
+        .admin-table th {
+            color: var(--accent-color);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .status-success {
+            background-color: rgba(105, 219, 124, 0.2);
+            color: #69db7c;
+        }
+
+        .status-warning {
+            background-color: rgba(255, 192, 72, 0.2);
+            color: #ffc048;
+        }
+
+        .status-error {
+            background-color: rgba(255, 94, 87, 0.2);
+            color: #ff5e57;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .product-form input,
+        .product-form textarea,
+        .product-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #020c1b;
+            border: 1px solid #233554;
+            color: var(--text-primary);
+            border-radius: 4px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(2, 12, 27, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--secondary-color);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid var(--accent-color);
+            width: 60%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close {
+            color: var(--text-secondary);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        .stock-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stock-input {
+            width: 60px !important;
+            margin-bottom: 0 !important;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+            <span
+                style="margin-left: 10px; font-size: 0.8rem; color: var(--accent-color); border: 1px solid var(--accent-color); padding: 2px 6px; border-radius: 4px;">ADMIN</span>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li><a href="index.html">View Site</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back, <span id="adminName">Admin</span></p>
+            </div>
+            <button class="btn-primary" onclick="openModal('add')">+ Add New Product</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#" class="active" onclick="switchTab('products')"><i class="fa fa-laptop"></i>
+                            Products</a></li>
+                    <li><a href="#" onclick="switchTab('orders')"><i class="fa fa-shopping-bag"></i> Orders (Coming
+                            Soon)</a></li>
+                    <li><a href="#" onclick="switchTab('users')"><i class="fa fa-users"></i> Users (Coming Soon)</a>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content-area">
+                <!-- Products Tab -->
+                <div id="products-tab">
+                    <div class="content-card">
+                        <h2>Product Inventory</h2>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Price</th>
+                                        <th>Stock</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-products-list">
+                                    <!-- Populated by JS -->
+                                    <tr>
+                                        <td colspan="6">Loading products...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- Product Modal (Add/Edit) -->
+        <div id="productModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Product</h2>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <form id="productForm" class="product-form" onsubmit="handleProductSubmit(event)">
+                    <input type="hidden" id="p-id">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label>Product Name</label>
+                            <input type="text" id="p-name" placeholder="Laptop Pro" required>
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <select id="p-category">
+                                <option value="Computers">Computers</option>
+                                <option value="Networking">Networking</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="Storage">Storage</option>
+                                <option value="Laptops">Laptops</option>
+                                <option value="Phones">Phones</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label>Price (FCFA)</label>
+                            <input type="number" id="p-price" placeholder="500000" required>
+                        </div>
+                        <div>
+                            <label>Initial Stock</label>
+                            <input type="number" id="p-stock" placeholder="10" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label>Warranty</label>
+                            <input type="text" id="p-warranty" placeholder="12 months">
+                        </div>
+                        <div>
+                            <label>Image URL</label>
+                            <input type="text" id="p-image_url" placeholder="https://example.com/image.jpg">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Specifications</label>
+                        <textarea id="p-specs" rows="3" placeholder="RAM: 16GB, CPU: i7..."></textarea>
+                    </div>
+                    <div>
+                        <label>Description</label>
+                        <textarea id="p-description" rows="3" placeholder="A high performance laptop..."></textarea>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button type="submit" class="btn-primary" style="width: 100%;">Save Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts/api.js"></script>
+    <script>
+        // Check Auth
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = ApiClient.getToken();
+            const userStr = localStorage.getItem('user');
+
+            if (!token || !userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+            if (!user.is_admin) {
+                alert('Access Denied: Admin privileges required.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('adminName').textContent = user.full_name;
+            loadProducts();
+            loadOrders();
+            loadUsers();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            event.target.closest('a').classList.add('active'); // Simple toggle
+
+            // In a real app, I'd hide/show divs. For this demo, I will just alert or log
+            // But let's verify what the DOM expects.
+            // Ah, I see I only have #products-tab in the HTML. I should inject the other tabs or reuse the area.
+            // For users/orders visualisation, let's create simple alert for now to confirm data connection
+            // or better yet, inject the HTML dynamically.
+
+            const contentArea = document.getElementById('content-area');
+            if (tab === 'products') {
+                // Reload page or show products div (simplification)
+                location.reload();
+            } else if (tab === 'orders') {
+                displayOrders();
+            } else if (tab === 'users') {
+                displayUsers();
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const products = await ApiClient.getProducts();
+                window.allProducts = products; // Save to global for editing
+                const tbody = document.getElementById('admin-products-list');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    products.forEach(p => {
+                        const tr = document.createElement('tr');
+                        const stockStatusClass = p.stock <= 0 ? 'status-error' : (p.stock < 5 ? 'status-warning' : 'status-success');
+
+                        tr.innerHTML = `
+                            <td>#${p.id}</td>
+                            <td>${p.name}</td>
+                            <td>${p.category}</td>
+                            <td>${p.price.toLocaleString()} FCFA</td>
+                            <td>
+                                <div class="stock-control">
+                                    <input type="number" class="stock-input" value="${p.stock}" onchange="handleQuickStockUpdate(${p.id}, this.value)">
+                                    <span class="status-badge ${stockStatusClass}" style="${p.availability === 'Out of Stock' ? 'background:rgba(255,0,0,0.1); color:red' : ''}">${p.availability}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="action-btn" onclick="openModal('edit', ${p.id})" title="Edit"><i class="fa fa-pencil"></i></button>
+                                <button class="action-btn" onclick="handleDeleteProduct(${p.id})" title="Delete" style="color:#ff6b6b"><i class="fa fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error loading products: ' + err.message);
+            }
+        }
+
+        async function handleQuickStockUpdate(id, newStock) {
+            try {
+                await ApiClient.updateStock(id, parseInt(newStock));
+                loadProducts(); // Refresh list to see updated status
+            } catch (err) {
+                alert('Failed to update stock: ' + err.message);
+            }
+        }
+
+        function openModal(mode, id = null) {
+            const modal = document.getElementById('productModal');
+            const form = document.getElementById('productForm');
+            const title = document.getElementById('modalTitle');
+
+            form.reset();
+            document.getElementById('p-id').value = '';
+
+            if (mode === 'add') {
+                title.textContent = 'Add New Product';
+            } else {
+                title.textContent = 'Edit Product';
+                const product = window.allProducts.find(p => p.id === id);
+                if (product) {
+                    document.getElementById('p-id').value = product.id;
+                    document.getElementById('p-name').value = product.name;
+                    document.getElementById('p-category').value = product.category;
+                    document.getElementById('p-price').value = product.price;
+                    document.getElementById('p-stock').value = product.stock;
+                    document.getElementById('p-warranty').value = product.warranty || '';
+                    document.getElementById('p-image_url').value = product.image_url || '';
+                    document.getElementById('p-specs').value = product.specs || '';
+                    document.getElementById('p-description').value = product.description || '';
+                }
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('productModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        async function handleProductSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('p-id').value;
+            const data = {
+                name: document.getElementById('p-name').value,
+                category: document.getElementById('p-category').value,
+                price: parseFloat(document.getElementById('p-price').value),
+                stock: parseInt(document.getElementById('p-stock').value),
+                warranty: document.getElementById('p-warranty').value,
+                image_url: document.getElementById('p-image_url').value,
+                specs: document.getElementById('p-specs').value,
+                description: document.getElementById('p-description').value
+            };
+
+            try {
+                if (id) {
+                    await ApiClient.updateProduct(id, data);
+                    alert('Product updated successfully!');
+                } else {
+                    await ApiClient.createProduct(data);
+                    alert('Product added successfully!');
+                }
+                closeModal();
+                loadProducts();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        async function handleDeleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    await ApiClient.deleteProduct(id);
+                    alert('Product deleted successfully!');
+                    loadProducts();
+                } catch (err) {
+                    alert('Error deleting product: ' + err.message);
+                }
+            }
+        }
+
+        async function displayOrders() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = '<h2>Loading Orders...</h2>';
+            try {
+                const orders = await ApiClient.getOrders();
+                let html = `
+                <div class="content-card">
+                    <h2>Orders</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User ID</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                if (orders.length === 0) {
+                    html += '<tr><td colspan="4">No orders found.</td></tr>';
+                } else {
+                    orders.forEach(o => {
+                        html += `
+                            <tr>
+                                <td>#${o.id}</td>
+                                <td>${o.user_id}</td>
+                                <td>${o.total_amount} FCFA</td>
+                                <td>${o.status}</td>
+                            </tr>`;
+                    });
+                }
+                html += '</tbody></table></div>';
+                contentArea.innerHTML = html;
+            } catch (error) {
+                contentArea.innerHTML = `<p style="color:red">Error loading orders: ${error.message}</p>`;
+            }
+        }
+
+        async function displayUsers() {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = '<h2>Loading Users...</h2>';
+            try {
+                const users = await ApiClient.getUsers();
+                let html = `
+                <div class="content-card">
+                    <h2>Registered Users</h2>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                users.forEach(u => {
+                    html += `
+                        <tr>
+                            <td>#${u.id}</td>
+                            <td>${u.full_name}</td>
+                            <td>${u.email}</td>
+                            <td>${u.phone}</td>
+                            <td>${u.is_admin ? 'Admin' : 'Customer'}</td>
+                        </tr>`;
+                });
+                html += '</tbody></table></div>';
+                contentArea.innerHTML = html;
+            } catch (error) {
+                contentArea.innerHTML = `<p style="color:red">Error loading users: ${error.message}</p>`;
+            }
+        }
+
+        // Keep helpers (loadOrders, etc) placeholder if needed
+        async function loadOrders() { console.log("Pre-fetching orders..."); } // Just to satisfy init
+        async function loadUsers() { console.log("Pre-fetching users..."); }
+
+        function showAddProductModal() {
+            document.getElementById('add-product-form').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function hideAddProductModal() {
+            document.getElementById('add-product-form').style.display = 'none';
+        }
+
+        async function handleAddProduct(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('p-name').value,
+                category: document.getElementById('p-category').value,
+                price: parseFloat(document.getElementById('p-price').value),
+                warranty: document.getElementById('p-warranty').value,
+                specs: document.getElementById('p-specs').value,
+                availability: 'In Stock'
+            };
+
+            // Note: Currently just alert as I didn't verify the POST endpoint auth fully in this quick pass
+            // But this demonstrates the intent.
+            // In a real run, we'd call ApiClient.createProduct(data)
+            alert('Simulation: Product would be added here. (Backend endpoint ready)');
+            hideAddProductModal();
+        }
+
+        function logout() {
+            ApiClient.logout();
+        }
+    </script>
+</body>
+
+</html>

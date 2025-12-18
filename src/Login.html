@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <title>Login - ProTech Solutions</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="Products.html">Products</a></li>
+                <li> <a href="Contacts.html">Contact</a></li>
+                <li> <a href="AboutUs.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="cta-group">
+            <a class="cta" href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="cta" href="register.html">Register</a>
+        </div>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-box">
+            <h2>Welcome Back</h2>
+            <p>Login to access your orders and account.</p>
+            <form id="loginForm" onsubmit="event.preventDefault(); validateLogin();">
+                <div class="form-group">
+                    <label for="username">Username / Email</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <div class="auth-links">
+                    <a href="#">Forgot Password?</a>
+                    <span>New here? <a href="register.html">Create an account</a></span>
+                </div>
+            </form>
+            <div id="authMessage"></div>
+        </div>
+    </main>
+
+    <footer class="footer-distributed">
+        <!-- Footer content will be standardized later -->
+        <p class="footer-company-name">ProTech Solutions &copy; 2024</p>
+    </footer>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/validation.js"></script>
+</body>
+
+</html>

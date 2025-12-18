@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Security Test - ProTech Solutions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a192f;
+            color: #e6f1ff;
+        }
+
+        h1 {
+            color: #64ffda;
+        }
+
+        .test-box {
+            background: #112240;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #233554;
+        }
+
+        button {
+            background: transparent;
+            color: #64ffda;
+            border: 1px solid #64ffda;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #020c1b;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .vulnerable {
+            color: #ff6b6b;
+        }
+
+        .safe {
+            color: #69db7c;
+        }
+
+        .info {
+            color: #8892b0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔒 CORS Vulnerability Test</h1>
+
+    <div class="test-box">
+        <h2>What is this test?</h2>
+        <p class="info">
+            This page tests if your API can be accessed from a different origin (website).
+            If CORS is too permissive, any malicious website could access your API and steal data.
+        </p>
+        <p class="info">
+            <strong>How to use:</strong> Open this file directly in your browser (file:// protocol),
+            not through your web server. This simulates a different origin.
+        </p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 1: Access Products API</h2>
+        <button onclick="testProducts()">Run Test</button>
+        <div id="products-result" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 2: Access Users API</h2>
+        <button onclick="testUsers()">Run Test</button>
+        <div id="users-result" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 3: Try to Login from Different Origin</h2>
+        <button onclick="testLogin()">Run Test</button>
+        <div id="login-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000/api';
+
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const className = type === 'vulnerable' ? 'vulnerable' : type === 'safe' ? 'safe' : 'info';
+            el.innerHTML += `<div class="${className}">${message}</div>`;
+        }
+
+        async function testProducts() {
+            const resultId = 'products-result';
+            document.getElementById(resultId).innerHTML = '<div class="info">Testing...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/products/`);
+                const data = await response.json();
+
+                log(resultId, '❌ VULNERABLE!', 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, `Successfully accessed API from different origin (file://)`, 'vulnerable');
+                log(resultId, `Received ${data.length} products`, 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, 'This means ANY website can access your product data!', 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, 'Sample product:', 'info');
+                log(resultId, JSON.stringify(data[0], null, 2), 'info');
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    log(resultId, '✅ PROTECTED!', 'safe');
+                    log(resultId, '', 'info');
+                    log(resultId, 'CORS policy blocked the request.', 'safe');
+                    log(resultId, 'Your API is protected from cross-origin access.', 'safe');
+                } else {
+                    log(resultId, `⚠️ Error: ${error.message}`, 'info');
+                }
+            }
+        }
+
+        async function testUsers() {
+            const resultId = 'users-result';
+            document.getElementById(resultId).innerHTML = '<div class="info">Testing...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/users`);
+                const data = await response.json();
+
+                log(resultId, '❌ CRITICAL VULNERABILITY!', 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, `Successfully accessed user list from different origin!`, 'vulnerable');
+                log(resultId, `Received ${data.length} users with personal information`, 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, 'This is a CRITICAL security issue!', 'vulnerable');
+                log(resultId, 'Any website can see all user emails and personal data!', 'vulnerable');
+                log(resultId, '', 'info');
+                log(resultId, 'Sample user data:', 'info');
+                log(resultId, JSON.stringify(data[0], null, 2), 'info');
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    log(resultId, '✅ PROTECTED by CORS!', 'safe');
+                    log(resultId, 'However, check if authentication is required.', 'info');
+                } else {
+                    log(resultId, `⚠️ Error: ${error.message}`, 'info');
+                }
+            }
+        }
+
+        async function testLogin() {
+            const resultId = 'login-result';
+            document.getElementById(resultId).innerHTML = '<div class="info">Testing...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'test@test.com',
+                        password: 'test123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log(resultId, '❌ VULNERABLE!', 'vulnerable');
+                    log(resultId, '', 'info');
+                    log(resultId, 'Login request succeeded from different origin!', 'vulnerable');
+                    log(resultId, 'A malicious website could attempt to login users.', 'vulnerable');
+                } else {
+                    log(resultId, '⚠️ Login failed (expected)', 'info');
+                    log(resultId, `Status: ${response.status}`, 'info');
+                    log(resultId, `Message: ${data.message}`, 'info');
+                    log(resultId, '', 'info');
+                    log(resultId, 'But CORS still allowed the request to be sent.', 'vulnerable');
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    log(resultId, '✅ PROTECTED!', 'safe');
+                    log(resultId, 'CORS blocked the login request.', 'safe');
+                } else {
+                    log(resultId, `⚠️ Error: ${error.message}`, 'info');
+                }
+            }
+        }
+
+        // Auto-run first test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const origin = window.location.protocol + '//' + window.location.host;
+                if (origin.startsWith('file://') || !origin.includes('127.0.0.1:5000')) {
+                    document.getElementById('products-result').innerHTML =
+                        '<div class="info">✅ Good! You\'re testing from a different origin (' + origin + ')</div>' +
+                        '<div class="info">Click "Run Test" to check CORS configuration.</div>';
+                } else {
+                    document.getElementById('products-result').innerHTML =
+                        '<div class="vulnerable">⚠️ Warning: You\'re accessing this from the same origin as your API.</div>' +
+                        '<div class="vulnerable">For accurate CORS testing, open this file directly (file://) or from a different server.</div>';
+                }
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Test - ProTech Solutions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a192f;
+            color: #e6f1ff;
+        }
+
+        .test-section {
+            background: #112240;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #233554;
+        }
+
+        button {
+            background: transparent;
+            color: #64ffda;
+            border: 1px solid #64ffda;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #020c1b;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .success {
+            color: #69db7c;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        h1 {
+            color: #64ffda;
+        }
+
+        h2 {
+            color: #8892b0;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Checkout System Test</h1>
+    <p>Use this page to test the checkout functionality step by step.</p>
+
+    <div class="test-section">
+        <h2>1. Test Backend Connection</h2>
+        <button onclick="testBackend()">Test Backend</button>
+        <div id="backend-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Authentication</h2>
+        <button onclick="testLogin()">Test Login</button>
+        <button onclick="checkAuth()">Check Auth Status</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Cart</h2>
+        <button onclick="addTestItem()">Add Test Item to Cart</button>
+        <button onclick="viewCart()">View Cart</button>
+        <button onclick="clearCart()">Clear Cart</button>
+        <div id="cart-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test Checkout</h2>
+        <button onclick="testCheckout()">Test Checkout</button>
+        <div id="checkout-result" class="result"></div>
+    </div>
+
+    <script src="scripts/api.js"></script>
+    <script>
+        function log(elementId, message, isError = false) {
+            const el = document.getElementById(elementId);
+            const className = isError ? 'error' : 'success';
+            el.innerHTML += `<div class="${className}">${message}</div>`;
+        }
+
+        async function testBackend() {
+            const result = document.getElementById('backend-result');
+            result.innerHTML = 'Testing...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/products/');
+                if (response.ok) {
+                    const data = await response.json();
+                    log('backend-result', `✅ Backend is running!`);
+                    log('backend-result', `✅ Found ${data.length} products`);
+                } else {
+                    log('backend-result', `❌ Backend returned status: ${response.status}`, true);
+                }
+            } catch (error) {
+                log('backend-result', `❌ Cannot connect to backend: ${error.message}`, true);
+                log('backend-result', `Make sure to run: cd backend && python app.py`, true);
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('auth-result');
+            result.innerHTML = 'Testing login...';
+
+            try {
+                const response = await ApiClient.login('admin@protechsolutions.cm', 'admin_password');
+                log('auth-result', `✅ Login successful!`);
+                log('auth-result', `✅ Token saved`);
+                log('auth-result', `User: ${response.user.full_name}`);
+            } catch (error) {
+                log('auth-result', `❌ Login failed: ${error.message}`, true);
+            }
+        }
+
+        function checkAuth() {
+            const result = document.getElementById('auth-result');
+            result.innerHTML = '';
+
+            const token = ApiClient.getToken();
+            const user = localStorage.getItem('user');
+
+            if (token) {
+                log('auth-result', `✅ Logged in`);
+                log('auth-result', `Token: ${token.substring(0, 30)}...`);
+                if (user) {
+                    const userData = JSON.parse(user);
+                    log('auth-result', `User: ${userData.full_name} (${userData.email})`);
+                }
+            } else {
+                log('auth-result', `❌ Not logged in`, true);
+            }
+        }
+
+        function addTestItem() {
+            const result = document.getElementById('cart-result');
+            result.innerHTML = '';
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.push({
+                id: 1,
+                name: 'Dell Latitude 5420',
+                price: 450000,
+                quantity: 1
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            log('cart-result', `✅ Added test item to cart`);
+            log('cart-result', `Cart now has ${cart.length} items`);
+        }
+
+        function viewCart() {
+            const result = document.getElementById('cart-result');
+            result.innerHTML = '';
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            if (cart.length === 0) {
+                log('cart-result', `Cart is empty`, true);
+            } else {
+                log('cart-result', `✅ Cart has ${cart.length} items:`);
+                cart.forEach((item, i) => {
+                    log('cart-result', `${i + 1}. ${item.name} x${item.quantity} = ${item.price} FCFA`);
+                });
+            }
+        }
+
+        function clearCart() {
+            localStorage.setItem('cart', '[]');
+            log('cart-result', `✅ Cart cleared`);
+        }
+
+        async function testCheckout() {
+            const result = document.getElementById('checkout-result');
+            result.innerHTML = 'Starting checkout test...';
+
+            // Check prerequisites
+            const token = ApiClient.getToken();
+            if (!token) {
+                log('checkout-result', `❌ Not logged in. Click "Test Login" first.`, true);
+                return;
+            }
+            log('checkout-result', `✅ User is logged in`);
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                log('checkout-result', `❌ Cart is empty. Click "Add Test Item" first.`, true);
+                return;
+            }
+            log('checkout-result', `✅ Cart has ${cart.length} items`);
+
+            // Prepare order
+            const orderItems = cart.map(item => ({
+                id: Number(item.id),
+                quantity: Number(item.quantity)
+            }));
+            log('checkout-result', `Sending order: ${JSON.stringify(orderItems)}`);
+
+            try {
+                const response = await ApiClient.createOrder(orderItems);
+                log('checkout-result', `✅ ORDER CREATED SUCCESSFULLY!`);
+                log('checkout-result', `Order ID: #${response.order_id}`);
+                log('checkout-result', `Total: ${response.total.toLocaleString()} FCFA`);
+                log('checkout-result', `Items: ${response.items_count}`);
+
+                // Clear cart
+                localStorage.setItem('cart', '[]');
+                log('checkout-result', `✅ Cart cleared`);
+            } catch (error) {
+                log('checkout-result', `❌ Checkout failed: ${error.message}`, true);
+            }
+        }
+
+        // Auto-run backend test on load
+        window.addEventListener('load', () => {
+            setTimeout(testBackend, 500);
+        });
+    </script>
+</body>
+
+</html>

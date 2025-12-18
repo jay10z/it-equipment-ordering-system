@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="ProTech Solutions - Your trusted partner for IT equipment and accessories in Cameroon. Laptops, printers, networking devices, and more.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <title>ProTech Solutions - IT Equipment & Accessories | Cameroon</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="Products.html">Products</a></li>
+                <li><a href="Contacts.html">Contact</a></li>
+                <li><a href="AboutUs.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="cta-group">
+            <a class="cta" href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="cta" href="login.html">Login</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Empowering Your Digital World</h1>
+        <p>Your trusted partner for professional IT equipment and accessories in Cameroon. Quality products at
+            competitive prices.</p>
+        <a href="Products.html" class="btn-primary">Browse Products</a>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="products-container container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="product-grid" id="featured-products">
+            <!-- Products will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-distributed">
+        <div class="footer-left">
+            <h3>ProTech<span>Solutions</span></h3>
+            <p class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="AboutUs.html">About</a>
+                <a href="FAQS.html">FAQ</a>
+                <a href="Contacts.html">Contact</a>
+            </p>
+            <p class="footer-company-name">ProTech Solutions &copy; 2024</p>
+        </div>
+        <div class="footer-center">
+            <div>
+                <i class="fa fa-map-marker"></i>
+                <p><span>Bonapriso, Douala</span>Cameroon</p>
+            </div>
+            <div>
+                <i class="fa fa-phone"></i>
+                <p>+237 6 XX XX XX XX</p>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <p><a href="mailto:contact@protechsolutions.cm">contact@protechsolutions.cm</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <p class="footer-company-about">
+                <span>About the company</span>
+                We provide professional IT equipment and accessories for businesses, students, and professionals across
+                Cameroon.
+            </p>
+            <div class="footer-icons">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth_ui.js"></script>
+    <script src="scripts/products.js"></script>
+    <script>
+        // Load featured products on homepage
+        document.addEventListener('DOMContentLoaded', function () {
+            const featuredProducts = allProducts.slice(0, 6); // Get first 6 products
+            renderProducts(featuredProducts, 'featured-products');
+        });
+    </script>
+</body>
+
+</html>

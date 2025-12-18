@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Browse our complete catalogue of IT equipment - Laptops, Networking devices, Accessories, and Storage solutions.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <title>Products - ProTech Solutions</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Products.html" class="active">Products</a></li>
+                <li><a href="Contacts.html">Contact</a></li>
+                <li><a href="AboutUs.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="cta-group">
+            <a class="cta" href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="cta" href="login.html">Login</a>
+        </div>
+    </header>
+
+    <main class="container products-container">
+        <h1 class="section-title">Our Products</h1>
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+            <button class="filter-btn" onclick="filterProducts('Computers')">Computers & Laptops</button>
+            <button class="filter-btn" onclick="filterProducts('Networking')">Networking Equipment</button>
+            <button class="filter-btn" onclick="filterProducts('Accessories')">Accessories</button>
+            <button class="filter-btn" onclick="filterProducts('Storage')">Storage Devices</button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="product-grid" id="products-grid">
+            <!-- Products will be loaded dynamically -->
+        </div>
+    </main>
+
+    <footer class="footer-distributed">
+        <div class="footer-left">
+            <h3>ProTech<span>Solutions</span></h3>
+            <p class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="AboutUs.html">About</a>
+                <a href="FAQS.html">FAQ</a>
+                <a href="Contacts.html">Contact</a>
+            </p>
+            <p class="footer-company-name">ProTech Solutions &copy; 2024</p>
+        </div>
+        <div class="footer-center">
+            <div>
+                <i class="fa fa-map-marker"></i>
+                <p><span>Bonapriso, Douala</span>Cameroon</p>
+            </div>
+            <div>
+                <i class="fa fa-phone"></i>
+                <p>+237 6 XX XX XX XX</p>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <p><a href="mailto:contact@protechsolutions.cm">contact@protechsolutions.cm</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <p class="footer-company-about">
+                <span>About the company</span>
+                We provide professional IT equipment and accessories for businesses, students, and professionals across
+                Cameroon.
+            </p>
+            <div class="footer-icons">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth_ui.js"></script>
+    <script src="scripts/products.js"></script>
+    <script>
+        // Load all products on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            renderProducts(allProducts, 'products-grid');
+        });
+
+        // Filter products by category
+        function filterProducts(category) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtered = category === 'all' ? allProducts : allProducts.filter(p => p.category === category);
+            renderProducts(filtered, 'products-grid');
+        }
+    </script>
+</body>
+
+</html>

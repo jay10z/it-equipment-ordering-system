@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 e6e57ec50dde107079b33afe22e7c68032838195 Happi JN10 <georgemouapi@10s-MacBook-Pro.local> 1766044523 +0100	commit (initial): Initial project setup
+e6e57ec50dde107079b33afe22e7c68032838195 0000000000000000000000000000000000000000 Happi JN10 <georgemouapi@10s-MacBook-Pro.local> 1766044865 +0100	Branch: renamed refs/heads/main to refs/heads/main
+e6e57ec50dde107079b33afe22e7c68032838195 e6e57ec50dde107079b33afe22e7c68032838195 Happi JN10 <georgemouapi@10s-MacBook-Pro.local> 1766044865 +0100	Branch: renamed refs/heads/main to refs/heads/main
+e6e57ec50dde107079b33afe22e7c68032838195 3f0d1a0e9a2a2c72838a620ed393c7d8c8387b98 Happi JN10 <georgemouapi@10s-MacBook-Pro.local> 1766048090 +0100	commit: Add gunicorn for Render deployment
+3f0d1a0e9a2a2c72838a620ed393c7d8c8387b98 f89418986b9390e854e5d71e509370848a45c2af Happi JN10 <georgemouapi@10s-MacBook-Pro.local> 1766049104 +0100	commit: Add root health endpoint

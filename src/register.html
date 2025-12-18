@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <title>Register - ProTech Solutions</title>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h3>ProTech<span>Solutions</span></h3>
+        </div>
+        <nav>
+            <ul class="nav_links">
+                <li> <a href="index.html">Home</a></li>
+                <li> <a href="Products.html">Products</a></li>
+                <li> <a href="Contacts.html">Contact</a></li>
+                <li> <a href="AboutUs.html">About</a></li>
+            </ul>
+        </nav>
+        <div class="cta-group">
+            <a class="cta" href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a class="cta" href="login.html">Login</a>
+        </div>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-box">
+            <h2>Create Account</h2>
+            <p>Join ProTech Solutions for faster checkout.</p>
+            <form id="registerForm" onsubmit="event.preventDefault(); validateRegister();">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number (Cameroon)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="6XXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+                <div class="auth-links">
+                    <span>Already have an account? <a href="login.html">Login</a></span>
+                </div>
+            </form>
+            <div id="authMessage"></div>
+        </div>
+    </main>
+
+    <footer class="footer-distributed">
+        <p class="footer-company-name">ProTech Solutions &copy; 2024</p>
+    </footer>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/validation.js"></script>
+</body>
+
+</html>

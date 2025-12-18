@@ -111,10 +111,6 @@ class ApiClient {
         return this.request('/orders/', 'GET');
     }
 
-    static async getUsers() {
-        return this.request('/auth/users', 'GET');
-    }
-
     static async createOrder(items) {
         return this.request('/orders/', 'POST', { items });
     }
@@ -133,5 +129,17 @@ class ApiClient {
 
     static async updateStock(productId, stock) {
         return this.request(`/products/${productId}/stock`, 'PATCH', { stock });
+    }
+
+    static async updateOrderStatus(orderId, status) {
+        return this.request(`/orders/${orderId}/status`, 'PATCH', { status });
+    }
+
+    static async getMyOrders() {
+        return this.request('/orders/my-orders', 'GET');
+    }
+
+    static async getUsers() {
+        return this.request('/users/', 'GET'); // Fixed endpoint
     }
 }
